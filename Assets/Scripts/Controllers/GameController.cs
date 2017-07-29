@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
 
   GameObject mapTilesGo;
+  public GameObject roverPrefab;
+  GameObject powerLabel;
 
   SpriteManager spriteManager;
   DataManager dataManager;
@@ -25,9 +27,10 @@ public class GameController : MonoBehaviour {
 
     inputController = new InputController(Camera.main);
 
-    roverController = new RoverController(spriteManager);
+    var powerLabel = GameObject.Find("PowerLabel");
+    roverController = new RoverController(spriteManager, roverPrefab, powerLabel);
     roverController.RegisterActionCallbacks(inputController);
-    roverController.CreateRover();
+    roverController.CreateRover(dataManager);
 	}
 	
 	void Update () {
