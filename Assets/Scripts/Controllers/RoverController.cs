@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class RoverController {
 
@@ -11,12 +10,11 @@ public class RoverController {
   GameObject hoverBoxGo;
 
   SpriteManager spriteManager;
-  GameObject powerLabel;
 
-  public RoverController(SpriteManager spriteManager, GameObject roverPrefab, GameObject powerLabel) {
+  public RoverController(SpriteManager spriteManager, GameObject roverPrefab, Rover rover) {
     this.spriteManager = spriteManager;
     this.roverPrefab = roverPrefab;
-    this.powerLabel = powerLabel;
+    this.rover = rover;
   }
 
   public void RegisterActionCallbacks(InputController inputController) {
@@ -52,20 +50,14 @@ public class RoverController {
       return;
     }
 
-    rover.Position = currentTilePosition;
+    if(!rover.Move(currentTilePosition)) {
+      Debug.Log("Not enough power to move!");
+    }
 
     roverGo.transform.position = rover.Position;
   }
 
-  public void CreateRover(DataManager dataManager) {
-    rover = new Rover();
-    rover.Recharge();
-    rover.Position = new Vector3(
-      Mathf.FloorToInt(dataManager.tileMap.tileswide / 2),
-      Mathf.FloorToInt(dataManager.tileMap.tileshigh / 2) * -1,
-      0
-    );
-
+  public void CreateRover() {
     roverGo = GameObject.Instantiate(roverPrefab);
     roverGo.transform.position = rover.Position;
     roverGo.transform.localScale = new Vector3(1, 1, 0);
@@ -73,8 +65,6 @@ public class RoverController {
     SpriteRenderer renderer = roverGo.AddComponent<SpriteRenderer>();
     renderer.sortingLayerName = "Units";
     renderer.sprite = spriteManager.Get("Units", "Rover");
-
-    powerLabel.GetComponent<Text>().text = "POWER: " + rover.CurrentPower.ToString();
   }
 
   bool IsValidDestination(Vector3 currentTilePosition) {

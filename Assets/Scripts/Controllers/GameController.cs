@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
   GameObject mapTilesGo;
   public GameObject roverPrefab;
-  GameObject powerLabel;
+  Text powerLabel;
+  Rover rover;
 
   SpriteManager spriteManager;
   DataManager dataManager;
@@ -15,6 +17,8 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+    powerLabel = GameObject.Find("PowerLabel").GetComponent<Text>();
+
     mapTilesGo = new GameObject();
     mapTilesGo.name = "MapTiles";
 
@@ -27,15 +31,28 @@ public class GameController : MonoBehaviour {
 
     inputController = new InputController(Camera.main);
 
-    var powerLabel = GameObject.Find("PowerLabel");
-    roverController = new RoverController(spriteManager, roverPrefab, powerLabel);
+    rover = new Rover(
+      Mathf.FloorToInt(dataManager.tileMap.tileswide / 2),
+      Mathf.FloorToInt(dataManager.tileMap.tileshigh / 2) * -1
+    );
+
+    rover.CurrentPowerChanged += UpdatePowerLabel;
+
+    roverController = new RoverController(spriteManager, roverPrefab, rover);
     roverController.RegisterActionCallbacks(inputController);
-    roverController.CreateRover(dataManager);
+    roverController.CreateRover();
 	}
 	
 	void Update () {
     inputController.Update();
 	}
+
+  void UpdatePowerLabel(int currentPower) {
+    powerLabel.text = "POWER: " + currentPower.ToString();
+    if(currentPower < 1) {
+      powerLabel.color = Color.red;
+    }
+  }
 
   void CreateTileMap() {
     TileLayer layer = dataManager.tileMap.layers[0];
