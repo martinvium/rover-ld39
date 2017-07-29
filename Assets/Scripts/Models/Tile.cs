@@ -12,7 +12,7 @@ public class Tile {
   public int x;
 
   public int SpriteIndex() {
-    return tile - 1;
+    return tile;
   }
 
   public string Type() {

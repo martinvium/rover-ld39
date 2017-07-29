@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour {
 
+  GameObject mapTilesGo;
+
   SpriteManager spriteManager;
   DataManager dataManager;
-  GameObject mapTilesGo;
   InputController inputController;
   RoverController roverController;
 
@@ -32,7 +33,6 @@ public class GameController : MonoBehaviour {
 	void Update () {
     inputController.Update();
 	}
-
 
   void CreateTileMap() {
     TileLayer layer = dataManager.tileMap.layers[0];

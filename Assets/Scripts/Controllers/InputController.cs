@@ -25,7 +25,7 @@ public class InputController {
       Mathf.CeilToInt(currentMousePosition.y)
     );
 
-    /* HoverTile(currentMousePosition); */
+    HoverTile(currentTilePosition);
 
     if(Input.GetMouseButtonDown(LeftMouseButton)) {
       ClickTile(currentTilePosition);
