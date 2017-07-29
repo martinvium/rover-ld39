@@ -46,7 +46,9 @@ public class Rover {
     CurrentPowerChanged(CurrentPower);
   }
 
-  public void TransmitAnalyzedSamples() {
+  public void TransmitPendingSamples(HQ hq) {
+    hq.ReceiveSamples(PendingSamples);
+
     PendingSamples = 0;
     PendingSamplesChanged(PendingSamples);
 

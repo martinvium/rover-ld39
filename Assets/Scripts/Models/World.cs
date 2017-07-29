@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
+using UnityEngine.EventSystems;
 
 public class World {
 
@@ -8,9 +8,14 @@ public class World {
 
   public Tile[,] Tiles;
   public Rover Rover;
+  public HQ HQ;
+  public int Days { get; private set; }
+
+  public Action DaysChanged;
 
   public World(DataManager dataManager) {
     this.dataManager = dataManager;
+    Days = 0;
   }
 
   public void LoadTiles() {
@@ -27,5 +32,14 @@ public class World {
       Mathf.FloorToInt(dataManager.tileMap.tileswide / 2),
       Mathf.Abs(Mathf.FloorToInt(dataManager.tileMap.tileshigh / 2))
     );
+  }
+
+  public void CreateHQ() {
+    HQ = new HQ(this);
+  }
+
+  public void NextDay() {
+    Days += 1;
+    DaysChanged();
   }
 }

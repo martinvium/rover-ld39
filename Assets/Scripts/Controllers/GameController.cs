@@ -7,8 +7,11 @@ public class GameController : MonoBehaviour {
 
   GameObject mapTilesGo;
   public GameObject roverPrefab;
+
   Text powerLabel;
   Text pendingSamplesLabel;
+  Text missionStatusLabel;
+
   World world;
 
   SpriteManager spriteManager;
@@ -20,6 +23,7 @@ public class GameController : MonoBehaviour {
 	void Start () {
     powerLabel = GameObject.Find("PowerLabel").GetComponent<Text>();
     pendingSamplesLabel = GameObject.Find("PendingSamplesAmount").GetComponent<Text>();
+    missionStatusLabel = GameObject.Find("MissionStatusLabel").GetComponent<Text>();
 
     mapTilesGo = new GameObject();
     mapTilesGo.name = "MapTiles";
@@ -32,6 +36,10 @@ public class GameController : MonoBehaviour {
     world = new World(dataManager);
     world.LoadTiles();
     world.CreateRover();
+    world.CreateHQ();
+
+    world.HQ.SamplesChanged += UpdateMissionStatus;
+    world.DaysChanged += UpdateMissionStatus;
 
     CreateTileMap();
 
@@ -60,6 +68,10 @@ public class GameController : MonoBehaviour {
 
   void UpdatePendingSamplesLabel(int pending) {
     pendingSamplesLabel.text = pending.ToString();
+  }
+
+  void UpdateMissionStatus() {
+    missionStatusLabel.text = world.HQ.MissionStatusText();
   }
 
   void CreateTileMap() {
@@ -97,9 +109,10 @@ public class GameController : MonoBehaviour {
 
   public void EndTurn() {
     world.Rover.Recharge();
+    world.NextDay();
   }
 
   public void TransmitAnalyzedSamples() {
-    world.Rover.TransmitAnalyzedSamples();
+    world.Rover.TransmitPendingSamples(world.HQ);
   }
 }
