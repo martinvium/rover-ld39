@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour {
   GameObject mapTilesGo;
   public GameObject roverPrefab;
   Text powerLabel;
+  Text pendingSamplesLabel;
   World world;
 
   SpriteManager spriteManager;
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     powerLabel = GameObject.Find("PowerLabel").GetComponent<Text>();
+    pendingSamplesLabel = GameObject.Find("PendingSamplesAmount").GetComponent<Text>();
 
     mapTilesGo = new GameObject();
     mapTilesGo.name = "MapTiles";
@@ -36,6 +38,7 @@ public class GameController : MonoBehaviour {
     inputController = new InputController(Camera.main);
 
     world.Rover.CurrentPowerChanged += UpdatePowerLabel;
+    world.Rover.PendingSamplesChanged += UpdatePendingSamplesLabel;
 
     roverController = new RoverController(spriteManager, roverPrefab, world.Rover);
     roverController.RegisterActionCallbacks(inputController);
@@ -50,7 +53,13 @@ public class GameController : MonoBehaviour {
     powerLabel.text = "POWER: " + currentPower.ToString();
     if(currentPower < 1) {
       powerLabel.color = Color.red;
+    } else {
+      powerLabel.color = Color.green;
     }
+  }
+
+  void UpdatePendingSamplesLabel(int pending) {
+    pendingSamplesLabel.text = pending.ToString();
   }
 
   void CreateTileMap() {
@@ -84,5 +93,13 @@ public class GameController : MonoBehaviour {
 
   Tile GetTileUnderRover() {
     return world.Tiles[world.Rover.X, world.Rover.Y];
+  }
+
+  public void EndTurn() {
+    world.Rover.Recharge();
+  }
+
+  public void TransmitAnalyzedSamples() {
+    world.Rover.TransmitAnalyzedSamples();
   }
 }

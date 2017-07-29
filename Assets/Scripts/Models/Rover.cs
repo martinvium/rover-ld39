@@ -6,19 +6,22 @@ public class Rover {
 
   public int CurrentPower = 0;
   public int MaxPower = 100;
+  public int PendingSamples = 0;
   public int X { get; private set; }
   public int Y { get; private set; }
 
   public Action<int> CurrentPowerChanged;
+  public Action<int> PendingSamplesChanged;
 
   public Rover(int x, int y) {
     X = x;
     Y = y;
-    Recharge();
+    CurrentPower = MaxPower;
   }
 
   public void Recharge() {
     CurrentPower = MaxPower;
+    CurrentPowerChanged(CurrentPower);
   }
 
   public bool Move(int x, int y) {
@@ -36,8 +39,18 @@ public class Rover {
   }
 
   public void GetSoilSample() {
-    CurrentPower += 10;
+    PendingSamples += 1;
+    PendingSamplesChanged(PendingSamples);
 
+    CurrentPower -= 5;
+    CurrentPowerChanged(CurrentPower);
+  }
+
+  public void TransmitAnalyzedSamples() {
+    PendingSamples = 0;
+    PendingSamplesChanged(PendingSamples);
+
+    CurrentPower = 0;
     CurrentPowerChanged(CurrentPower);
   }
 }
