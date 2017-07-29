@@ -11,6 +11,8 @@ public class Tile {
   public int flipX;
   public int x;
 
+  public int Soil = 1;
+
   public int SpriteIndex() {
     return tile;
   }

@@ -22,11 +22,7 @@ public class RoverController {
     inputController.ClickTile += MoveRover;
   }
 
-  public Vector3 Position() {
-    return roverGo.transform.position;
-  }
-
-  void ShowTileHoverBox(Vector3 currentTilePosition) {
+  void ShowTileHoverBox(int x, int y) {
     if(hoverBoxGo == null) {
       hoverBoxGo = new GameObject();
       hoverBoxGo.name = "HoverBox";
@@ -35,31 +31,31 @@ public class RoverController {
       renderer.sprite = spriteManager.Get("Tiles", "Tiles_3");
     }
 
-    if(IsValidDestination(currentTilePosition)) {
+    if(IsValidDestination(x, y)) {
       hoverBoxGo.SetActive(true);
     } else {
       hoverBoxGo.SetActive(false);
       return;
     }
 
-    hoverBoxGo.transform.position = currentTilePosition;
+    hoverBoxGo.transform.position = new Vector3(x, y, 0);
   }
 
-  void MoveRover(Vector3 currentTilePosition) {
-    if(!IsValidDestination(currentTilePosition)) {
+  void MoveRover(int x, int y) {
+    if(!IsValidDestination(x, y)) {
       return;
     }
 
-    if(!rover.Move(currentTilePosition)) {
+    if(!rover.Move(x, y)) {
       Debug.Log("Not enough power to move!");
     }
 
-    roverGo.transform.position = rover.Position;
+    roverGo.transform.position = new Vector3(rover.X, rover.Y, 0);
   }
 
   public void CreateRover() {
     roverGo = GameObject.Instantiate(roverPrefab);
-    roverGo.transform.position = rover.Position;
+    roverGo.transform.position = new Vector3(rover.X, rover.Y, 0);
     roverGo.transform.localScale = new Vector3(1, 1, 0);
 
     SpriteRenderer renderer = roverGo.AddComponent<SpriteRenderer>();
@@ -67,31 +63,21 @@ public class RoverController {
     renderer.sprite = spriteManager.Get("Units", "Rover");
   }
 
-  bool IsValidDestination(Vector3 currentTilePosition) {
-    Vector3 roverPos = Position();
-
-    int roverX = Mathf.FloorToInt(roverPos.x);
-    int roverY = Mathf.FloorToInt(roverPos.y);
-
-    int mouseX = Mathf.FloorToInt(currentTilePosition.x);
-    int mouseY = Mathf.FloorToInt(currentTilePosition.y);
-
-    if(mouseX == roverX) {
-      if(mouseY -1 == roverY) {
+  bool IsValidDestination(int mouseX, int mouseY) {
+    if(mouseX == rover.X) {
+      if(mouseY -1 == rover.Y) {
         return true;
-      } else if(mouseY + 1 == roverY) {
+      } else if(mouseY + 1 == rover.Y) {
         return true;
       }
-    } else if(mouseY == roverY) {
-      if(mouseX -1 == roverX) {
+    } else if(mouseY == rover.Y) {
+      if(mouseX -1 == rover.X) {
         return true;
-      } else if(mouseX + 1 == roverX) {
+      } else if(mouseX + 1 == rover.X) {
         return true;
       }
     }
 
     return false;
   }
-
-
 }

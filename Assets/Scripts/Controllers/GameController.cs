@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour {
   GameObject mapTilesGo;
   public GameObject roverPrefab;
   Text powerLabel;
-  Rover rover;
+  World world;
 
   SpriteManager spriteManager;
   DataManager dataManager;
@@ -27,18 +27,17 @@ public class GameController : MonoBehaviour {
 
     dataManager = DataManager.Instance();
 
+    world = new World(dataManager);
+    world.LoadTiles();
+    world.CreateRover();
+
     CreateTileMap();
 
     inputController = new InputController(Camera.main);
 
-    rover = new Rover(
-      Mathf.FloorToInt(dataManager.tileMap.tileswide / 2),
-      Mathf.FloorToInt(dataManager.tileMap.tileshigh / 2) * -1
-    );
+    world.Rover.CurrentPowerChanged += UpdatePowerLabel;
 
-    rover.CurrentPowerChanged += UpdatePowerLabel;
-
-    roverController = new RoverController(spriteManager, roverPrefab, rover);
+    roverController = new RoverController(spriteManager, roverPrefab, world.Rover);
     roverController.RegisterActionCallbacks(inputController);
     roverController.CreateRover();
 	}
@@ -55,18 +54,35 @@ public class GameController : MonoBehaviour {
   }
 
   void CreateTileMap() {
-    TileLayer layer = dataManager.tileMap.layers[0];
+    for(int x = 0; x < world.Tiles.GetLength(0); x++) {
+      for(int y = 0; y < world.Tiles.GetLength(1); y++) {
+        Tile tile = world.Tiles[x, y];
 
-    foreach(Tile tile in layer.tiles) {
-      GameObject go = new GameObject();
-      go.name = tile.Type() + "_" + tile.x + "_" + tile.y;
-      go.transform.SetParent(mapTilesGo.transform);
-      go.transform.position = new Vector3(tile.x * 1, tile.y * 1 * -1, 0);
-      go.transform.localScale = new Vector3(1, 1, 0);
+        GameObject go = new GameObject();
+        go.name = tile.Type() + "_" + tile.x + "_" + tile.y;
+        go.transform.SetParent(mapTilesGo.transform);
+        go.transform.position = new Vector3(tile.x, tile.y, 0);
+        go.transform.localScale = new Vector3(1, 1, 0);
 
-      SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
-      renderer.sortingLayerName = "Tiles";
-      renderer.sprite = spriteManager.Get("Tiles", tile.Type());
+        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
+        renderer.sortingLayerName = "Tiles";
+        renderer.sprite = spriteManager.Get("Tiles", tile.Type());
+      }
     }
+  }
+
+  public void SoilSampleClick() {
+    Tile tile = GetTileUnderRover();
+
+    if(tile.Soil > 0) {
+      world.Rover.GetSoilSample();
+      tile.Soil = 0;
+    } else {
+      Debug.Log("No soil left to sample!");
+    }
+  }
+
+  Tile GetTileUnderRover() {
+    return world.Tiles[world.Rover.X, world.Rover.Y];
   }
 }

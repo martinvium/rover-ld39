@@ -10,8 +10,8 @@ public class InputController {
   Camera camera;
   Vector3 currentMousePosition;
 
-  public Action<Vector3> HoverTile;
-  public Action<Vector3> ClickTile;
+  public Action<int, int> HoverTile;
+  public Action<int, int> ClickTile;
 
   public InputController(Camera camera) {
     this.camera = camera;
@@ -20,15 +20,13 @@ public class InputController {
   public void Update() {
 		currentMousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
 
-    var currentTilePosition = new Vector3(
-      Mathf.FloorToInt(currentMousePosition.x),
-      Mathf.CeilToInt(currentMousePosition.y)
-    );
+    int x = Mathf.FloorToInt(currentMousePosition.x);
+    int y = Mathf.CeilToInt(currentMousePosition.y);
 
-    HoverTile(currentTilePosition);
+    HoverTile(x, y);
 
     if(Input.GetMouseButtonDown(LeftMouseButton)) {
-      ClickTile(currentTilePosition);
+      ClickTile(x, y);
     }
   }
 }

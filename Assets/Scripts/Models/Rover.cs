@@ -6,12 +6,14 @@ public class Rover {
 
   public int CurrentPower = 0;
   public int MaxPower = 100;
-  public Vector3 Position { get; private set; }
+  public int X { get; private set; }
+  public int Y { get; private set; }
 
   public Action<int> CurrentPowerChanged;
 
   public Rover(int x, int y) {
-    Position = new Vector3(x, y, 0);
+    X = x;
+    Y = y;
     Recharge();
   }
 
@@ -19,17 +21,23 @@ public class Rover {
     CurrentPower = MaxPower;
   }
 
-  public bool Move(Vector3 destination) {
+  public bool Move(int x, int y) {
     if(CurrentPower < 25) {
       return false;
     }
 
     CurrentPower -= 25;
-    Position = destination;
+    X = x;
+    Y = y;
 
     CurrentPowerChanged(CurrentPower);
 
     return true;
   }
 
+  public void GetSoilSample() {
+    CurrentPower += 10;
+
+    CurrentPowerChanged(CurrentPower);
+  }
 }
