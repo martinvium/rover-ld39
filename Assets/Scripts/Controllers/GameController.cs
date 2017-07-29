@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
   Text powerLabel;
   Text pendingSamplesLabel;
   Text missionStatusLabel;
+  Text hoursUntilDuskLabel;
 
   World world;
 
@@ -24,6 +25,7 @@ public class GameController : MonoBehaviour {
     powerLabel = GameObject.Find("PowerLabel").GetComponent<Text>();
     pendingSamplesLabel = GameObject.Find("PendingSamplesAmount").GetComponent<Text>();
     missionStatusLabel = GameObject.Find("MissionStatusLabel").GetComponent<Text>();
+    hoursUntilDuskLabel = GameObject.Find("Clock").GetComponent<Text>();
 
     mapTilesGo = new GameObject();
     mapTilesGo.name = "MapTiles";
@@ -40,6 +42,7 @@ public class GameController : MonoBehaviour {
 
     world.HQ.SamplesChanged += UpdateMissionStatus;
     world.DaysChanged += UpdateMissionStatus;
+    world.HoursChanged += UpdateHoursUntilDusk;
 
     CreateTileMap();
 
@@ -55,6 +58,7 @@ public class GameController : MonoBehaviour {
 	
 	void Update () {
     inputController.Update();
+    world.Update();
 	}
 
   void UpdatePowerLabel(int currentPower) {
@@ -72,6 +76,10 @@ public class GameController : MonoBehaviour {
 
   void UpdateMissionStatus() {
     missionStatusLabel.text = world.HQ.MissionStatusText();
+  }
+
+  void UpdateHoursUntilDusk() {
+    hoursUntilDuskLabel.text = world.HoursUntilDusk.ToString() + " HOURS UNTIL DUSK";
   }
 
   void CreateTileMap() {
@@ -108,7 +116,6 @@ public class GameController : MonoBehaviour {
   }
 
   public void EndTurn() {
-    world.Rover.Recharge();
     world.NextDay();
   }
 
