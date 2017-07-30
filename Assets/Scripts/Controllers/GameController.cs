@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour {
 
   GameObject mapTilesGo;
   public GameObject roverPrefab;
+  public Dictionary<Tile, GameObject> tileGameObjects = new Dictionary<Tile, GameObject>();
 
   Text powerLabel;
   Text pendingSamplesLabel;
@@ -43,6 +44,7 @@ public class GameController : MonoBehaviour {
     world.HQ.SamplesChanged += UpdateMissionStatus;
     world.DaysChanged += UpdateMissionStatus;
     world.HoursChanged += UpdateHoursUntilDusk;
+    world.TileChanged += UpdateTile;
 
     CreateTileMap();
 
@@ -62,7 +64,7 @@ public class GameController : MonoBehaviour {
 	}
 
   void UpdatePowerLabel(int currentPower) {
-    powerLabel.text = "POWER: " + currentPower.ToString();
+    powerLabel.text = currentPower.ToString();
     if(currentPower < 1) {
       powerLabel.color = Color.red;
     } else {
@@ -96,6 +98,8 @@ public class GameController : MonoBehaviour {
         SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
         renderer.sortingLayerName = "Tiles";
         renderer.sprite = spriteManager.Get("Tiles", tile.Type());
+
+        tileGameObjects.Add(tile, go);
       }
     }
   }
@@ -103,16 +107,9 @@ public class GameController : MonoBehaviour {
   public void SoilSampleClick() {
     Tile tile = GetTileUnderRover();
 
-    if(tile.Soil > 0) {
-      world.Rover.GetSoilSample();
-      tile.Soil = 0;
-    } else {
+    if(!world.Rover.GetSoilSample(world, tile)) {
       Debug.Log("No soil left to sample!");
     }
-  }
-
-  Tile GetTileUnderRover() {
-    return world.Tiles[world.Rover.X, world.Rover.Y];
   }
 
   public void EndTurn() {
@@ -121,5 +118,14 @@ public class GameController : MonoBehaviour {
 
   public void TransmitAnalyzedSamples() {
     world.Rover.TransmitPendingSamples(world.HQ);
+  }
+
+  Tile GetTileUnderRover() {
+    return world.Tiles[world.Rover.X, world.Rover.Y];
+  }
+
+  void UpdateTile(Tile t) {
+    var renderer = tileGameObjects[t].GetComponent<SpriteRenderer>();
+    renderer.sprite = spriteManager.Get("Tiles", t.Type());
   }
 }

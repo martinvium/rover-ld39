@@ -38,12 +38,22 @@ public class Rover {
     return true;
   }
 
-  public void GetSoilSample() {
-    PendingSamples += 1;
+  public bool GetSoilSample(World w, Tile t) {
+    if(t.Samples < 1) {
+      return false;
+    }
+
+    PendingSamples += t.Samples;
     PendingSamplesChanged(PendingSamples);
+
+    t.Samples = 0;
 
     CurrentPower -= 5;
     CurrentPowerChanged(CurrentPower);
+
+    w.ChangeTile(t, Tile.EMPTY);
+
+    return true;
   }
 
   public void TransmitPendingSamples(HQ hq) {

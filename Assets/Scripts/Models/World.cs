@@ -16,6 +16,7 @@ public class World {
 
   public Action DaysChanged;
   public Action HoursChanged;
+  public Action<Tile> TileChanged;
 
   private float nextHourPass = 0.0f;
   public float nextHourPassOffset = 1f;
@@ -44,6 +45,7 @@ public class World {
     Tiles = new Tile[dataManager.tileMap.tileswide, dataManager.tileMap.tileshigh];
 
     foreach(Tile t in layer.tiles) {
+      t.GenerateSoil();
       Tiles[t.x, Mathf.Abs(t.y)] = t;
     }
   }
@@ -57,6 +59,11 @@ public class World {
 
   public void CreateHQ() {
     HQ = new HQ(this);
+  }
+
+  public void ChangeTile(Tile t, int newTile) {
+    t.tile = newTile;
+    TileChanged(t);
   }
 
   public void NextDay() {
