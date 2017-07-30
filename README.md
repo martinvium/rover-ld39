@@ -8,6 +8,12 @@ rover's memory.
 
 ![gameplay](https://user-images.githubusercontent.com/142239/28755927-057fdd02-7565-11e7-8a15-d4f3c249930c.png)
 
+Tools:
+
+- Unity (2017.1)
+- Bosca Ceoil
+- Pyxel Edit
+
 Post-morten:
 
 Not successful. The core loop is kind of broken, and not fun. Getting a full
