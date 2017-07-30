@@ -25,11 +25,11 @@ public class Rover {
   }
 
   public bool Move(int x, int y) {
-    if(CurrentPower < 25) {
+    if(CurrentPower < 10) {
       return false;
     }
 
-    CurrentPower -= 25;
+    CurrentPower -= 10;
     X = x;
     Y = y;
 
@@ -38,9 +38,15 @@ public class Rover {
     return true;
   }
 
-  public bool GetSoilSample(World w, Tile t) {
+  public void GetSoilSample(World w, Tile t) {
+    if(CurrentPower < 20) {
+      Debug.Log("Not enough power to sample!");
+      return;
+    }
+
     if(t.Samples < 1) {
-      return false;
+      Debug.Log("No soil left to sample!");
+      return;
     }
 
     PendingSamples += t.Samples;
@@ -48,12 +54,10 @@ public class Rover {
 
     t.Samples = 0;
 
-    CurrentPower -= 5;
+    CurrentPower -= 20;
     CurrentPowerChanged(CurrentPower);
 
     w.ChangeTile(t, Tile.EMPTY);
-
-    return true;
   }
 
   public void TransmitPendingSamples(HQ hq) {
@@ -64,5 +68,10 @@ public class Rover {
 
     CurrentPower = 0;
     CurrentPowerChanged(CurrentPower);
+  }
+
+  public void ResetSamples() {
+    PendingSamples = 0;
+    PendingSamplesChanged(PendingSamples);
   }
 }

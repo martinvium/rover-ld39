@@ -24,13 +24,13 @@ public class HQ {
       return "OPTIMISTIC";
     }
 
-    if(world.Days > 9 && Samples < 10) {
+    if(world.Days > 9 && Samples < 300) {
       return "FAILURE";
     }
 
-    if(Samples > 10) {
+    if(Samples >= 300) {
       return "SUCCESSFUL";
-    } else if(Samples > 5) {
+    } else if(Samples > 50) {
       return "PROMISING";
     } else if(world.Days > 2) {
       return "EMBARRASSING";

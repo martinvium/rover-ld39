@@ -7,7 +7,8 @@ public class Tile {
   public const int RUBLE = 0;
   public const int ROCKS = 1;
   public const int EMPTY = 2;
-  public const int EXPOSED = 4;
+  public const int SMALL_EXPOSED = 4;
+  public const int BIG_EXPOSED = 5;
 
   public int y;
   public int tile;
@@ -29,13 +30,16 @@ public class Tile {
   public void GenerateSoil() {
     switch(tile) {
       case RUBLE:
-        Samples = Random.Range(0, 50);
+        Samples = Random.Range(0, 20);
         break;
       case ROCKS:
-        Samples = Random.Range(30, 80);
+        Samples = Random.Range(20, 50);
         break;
-      case EXPOSED:
-        Samples = Random.Range(60, 100);
+      case SMALL_EXPOSED:
+        Samples = Random.Range(60, 80);
+        break;
+      case BIG_EXPOSED:
+        Samples = Random.Range(80, 100);
         break;
     }
   }

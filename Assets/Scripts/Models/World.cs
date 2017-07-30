@@ -72,6 +72,8 @@ public class World {
 
     HoursUntilDusk = InitialHoursUntilDusk;
     HoursChanged();
+
+    Rover.ResetSamples();
     Rover.Recharge();
   }
 }

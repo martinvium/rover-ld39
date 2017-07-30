@@ -106,10 +106,7 @@ public class GameController : MonoBehaviour {
 
   public void SoilSampleClick() {
     Tile tile = GetTileUnderRover();
-
-    if(!world.Rover.GetSoilSample(world, tile)) {
-      Debug.Log("No soil left to sample!");
-    }
+    world.Rover.GetSoilSample(world, tile);
   }
 
   public void EndTurn() {
