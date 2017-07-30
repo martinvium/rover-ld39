@@ -6,6 +6,8 @@ Collect samples from the planet you were send to explore. Transmit them back to
 headquarter before the sun goes away and your drained batteries will wipe the
 rover's memory.
 
+![gameplay](https://user-images.githubusercontent.com/142239/28755927-057fdd02-7565-11e7-8a15-d4f3c249930c.png)
+
 Post-morten:
 
 Not successful. The core loop is kind of broken, and not fun. Getting a full
