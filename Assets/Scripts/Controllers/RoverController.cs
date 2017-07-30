@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class RoverController {
 
+  public const int UP = 0;
+  public const int DOWN = 1;
+  public const int LEFT = 2;
+  public const int RIGHT = 3;
+
   Rover rover;
   GameObject roverPrefab;
   GameObject roverGo;
@@ -46,11 +51,29 @@ public class RoverController {
       return;
     }
 
+    int oldX = rover.X;
+    int oldY = rover.Y;
+
     if(!rover.Move(x, y)) {
       Debug.Log("Not enough power to move!");
     }
 
+    if(oldY < rover.Y) {
+      UpdateSprite(UP);
+    } else if(oldY > rover.Y) {
+      UpdateSprite(DOWN);
+    } else if(oldX < rover.X) {
+      UpdateSprite(LEFT);
+    } else {
+      UpdateSprite(RIGHT);
+    }
+
     roverGo.transform.position = new Vector3(rover.X, rover.Y, 0);
+  }
+
+  void UpdateSprite(int dir) {
+    var renderer = roverGo.GetComponent<SpriteRenderer>();
+    renderer.sprite = spriteManager.Get("Units", "Rover_" + dir);
   }
 
   public void CreateRover() {
@@ -60,7 +83,7 @@ public class RoverController {
 
     SpriteRenderer renderer = roverGo.AddComponent<SpriteRenderer>();
     renderer.sortingLayerName = "Units";
-    renderer.sprite = spriteManager.Get("Units", "Rover");
+    UpdateSprite(UP);
   }
 
   bool IsValidDestination(int mouseX, int mouseY) {
